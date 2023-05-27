@@ -24,7 +24,8 @@ class Level:
         self.height = 50
         self.wall_chance = 0.3
         self.world_map = generate_map(self.width, self.height, self.wall_chance)
-        print(self.world_map)
+        for row in self.world_map:
+            print(' '.join(row))
         return self.world_map
 
     def create_map(self):
