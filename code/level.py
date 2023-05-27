@@ -3,6 +3,7 @@ import settings
 from tile import Tile
 from player import Player
 from worldmap import *
+from debug import debug 
 
 class Level:
     def __init__(self):
@@ -36,8 +37,10 @@ class Level:
                 if col == 'x':
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
                 if col == 'p':
-                    Player((x,y), [self.visible_sprites])
+                    self.player = Player((x,y), [self.visible_sprites])
 
     def run(self):
         # update and draw the game
         self.visible_sprites.draw(self.display_surface)
+        self.visible_sprites.update()
+        debug(self.player.direction)
