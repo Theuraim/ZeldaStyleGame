@@ -15,7 +15,7 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
 
         #Map setup
-        settings.WORLD_MAP = self.setWorldMap()
+        settings.WORLD_MAP = self.setDungeon()
         # sprite setup
         self.create_map()
 
@@ -28,6 +28,17 @@ class Level:
         for row in self.world_map:
             print(' '.join(row))
         return self.world_map
+
+    def setDungeon(self):
+        self.width = 80
+        self.height = 40
+        self.num_rooms = 20
+
+        self.dungeon = generate_dungeon(self.width, self.height, self.num_rooms)
+        for row in self.dungeon:
+            print(' '.join(row))
+        
+        return self.dungeon
 
     def create_map(self):
         for row_index, row in enumerate(settings.WORLD_MAP):
@@ -59,6 +70,6 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
 
-        for sprite in self.sprites():
+        for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
             offset_position = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_position)
