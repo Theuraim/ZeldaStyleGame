@@ -7,7 +7,7 @@ class Game:
         #general setup
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGTH))
-        pygame.display.set_caption('Zelda Style(with some Dark Souls)')
+        pygame.display.set_caption('Zelda Style(with some Dark Souls mecanics)')
         self.clock = pygame.time.Clock()
 
         self.level = Level()

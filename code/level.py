@@ -1,7 +1,8 @@
 import pygame
-from settings import *
+import settings
 from tile import Tile
 from player import Player
+from worldmap import *
 
 class Level:
     def __init__(self):
@@ -12,14 +13,25 @@ class Level:
         self.visible_sprites = pygame.sprite.Group()
         self.obstacle_sprites = pygame.sprite.Group()
 
+        #Map setup
+        settings.WORLD_MAP = self.setWorldMap()
         # sprite setup
         self.create_map()
 
+    def setWorldMap(self):
+        # Example usage
+        self.width = 200
+        self.height = 50
+        self.wall_chance = 0.3
+        self.world_map = generate_map(self.width, self.height, self.wall_chance)
+        print(self.world_map)
+        return self.world_map
+
     def create_map(self):
-        for row_index, row in enumerate(WORLD_MAP):
+        for row_index, row in enumerate(settings.WORLD_MAP):
             for col_index, col in enumerate(row):
-                x = col_index * TILESIZE
-                y = row_index * TILESIZE
+                x = col_index * settings.TILESIZE
+                y = row_index * settings.TILESIZE
                 if col == 'x':
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
                 if col == 'p':
