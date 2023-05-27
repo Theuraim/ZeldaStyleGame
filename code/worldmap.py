@@ -44,4 +44,21 @@ def generate_map(width, height, wall_chance):
                                     player_placed = True
                             else: #else it places the empty space and the walls
                                 world_map[y + i][x + j] = pattern[i][j]
+
+    # Post-processing step to remove dead ends
+    for y in range(1, height - 1):
+        for x in range(1, width - 1):
+            if world_map[y][x] == 'x' and is_dead_end(world_map, x, y):
+                world_map[y][x] = ' '
+                
+                
     return world_map
+
+def is_dead_end(world_map, x, y):
+    # Check if the tile at (x, y) is a dead end
+    return (
+        world_map[y][x+1] == 'x' and
+        world_map[y][x-1] == 'x' and
+        world_map[y+1][x] == 'x' and
+        world_map[y-1][x] == 'x'
+    )
