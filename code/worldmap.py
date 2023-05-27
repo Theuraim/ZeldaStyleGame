@@ -67,3 +67,74 @@ def is_dead_end(world_map, x, y):
         world_map[y+1][x] == 'x' and
         world_map[y-1][x] == 'x'
     )
+
+def generate_dungeon(width, height, num_rooms):
+    dungeon = [['x'] * width for _ in range(height)]
+
+    rooms = []
+    for _ in range(num_rooms):
+        room_width = random.randint(3, 6)
+        room_height = random.randint(3, 6)
+        room_x = random.randint(1, width - room_width - 1)
+        room_y = random.randint(1, height - room_height - 1)
+
+        if is_room_valid(dungeon, room_x, room_y, room_width, room_height):
+            create_room(dungeon, room_x, room_y, room_width, room_height)
+            rooms.append((room_x, room_y, room_width, room_height))
+
+    for i in range(len(rooms) - 1):
+        x1, y1, _, _ = rooms[i]
+        x2, y2, _, _ = rooms[i + 1]
+        connect_rooms(dungeon, x1, y1, x2, y2)
+
+    player_x, player_y = random.choice(rooms)[:2]
+    dungeon[player_y][player_x] = 'p'
+
+    remove_dead_ends(dungeon)
+
+    return dungeon
+
+def is_room_valid(dungeon, x, y, width, height):
+    for i in range(y - 1, y + height + 1):
+        for j in range(x - 1, x + width + 1):
+            if dungeon[i][j] != 'x':
+                return False
+    return True
+
+def create_room(dungeon, x, y, width, height):
+    for i in range(y, y + height):
+        for j in range(x, x + width):
+            dungeon[i][j] = ' '
+
+def connect_rooms(dungeon, x1, y1, x2, y2):
+    if random.random() < 0.5:
+        create_horizontal_tunnel(dungeon, x1, x2, y1)
+        create_vertical_tunnel(dungeon, y1, y2, x2)
+    else:
+        create_vertical_tunnel(dungeon, y1, y2, x1)
+        create_horizontal_tunnel(dungeon, x1, x2, y2)
+
+def create_horizontal_tunnel(dungeon, x1, x2, y):
+    for x in range(min(x1, x2), max(x1, x2) + 1):
+        dungeon[y][x] = ' '
+
+def create_vertical_tunnel(dungeon, y1, y2, x):
+    for y in range(min(y1, y2), max(y1, y2) + 1):
+        dungeon[y][x] = ' '
+
+def remove_dead_ends(dungeon):
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    done = False
+
+    while not done:
+        done = True
+        for y in range(1, len(dungeon) - 1):
+            for x in range(1, len(dungeon[0]) - 1):
+                if dungeon[y][x] == ' ':
+                    neighbors = 0
+                    for dx, dy in directions:
+                        if dungeon[y + dy][x + dx] == ' ':
+                            neighbors += 1
+                    if neighbors <= 1:
+                        dungeon[y][x] = 'x'
+                        done = False
